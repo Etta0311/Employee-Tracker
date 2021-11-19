@@ -17,5 +17,12 @@
   "bugs": {
     "url": "https://github.com/Etta0311/Employee-Tracker/issues"
   },
-  "homepage": "https://github.com/Etta0311/Employee-Tracker#readme"
+  "homepage": "https://github.com/Etta0311/Employee-Tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "dotenv": "^10.0.0",
+    "inquirer": "^8.2.0",
+    "mysql2": "^2.3.3",
+    "promise-mysql": "^5.0.4"
+  }
 }
