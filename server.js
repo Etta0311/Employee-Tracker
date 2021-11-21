@@ -95,7 +95,7 @@ const manu = () => {
       }
 
       if (choices === "Finished & Quit") {
-        connection.end()
+        dbconnection.end()
     };
   });
 };
@@ -103,9 +103,9 @@ const manu = () => {
 // Choice - view all Department
 manageDepartments = () => {
   console.log('Viewing all departments\n');
-  const action = `SELECT department.id AS id, department.name AS department FROM department`; 
+  const sql= `SELECT department.id AS id, department.name AS department FROM department`; 
 
-  connection.promise().query(action, (err, rows) => {
+  dbconnection.query(sql, (err, rows) => {
     if (err) throw err;
     console.table(rows);
     manu();
@@ -120,7 +120,7 @@ manageRoles = () => {
                   FROM roles
                   INNER JOIN department ON roles.department_id = department.id`;
   
-  connection.promise().query(action, (err, rows) => {
+  dbconnection.query(action, (err, rows) => {
     if (err) throw err; 
     console.table(rows); 
     manu();
@@ -142,7 +142,7 @@ manageEmployees = () => {
                          LEFT JOIN department ON roles.department_id = department.id
                          LEFT JOIN employee manager ON employee.manager_id = manager.id`;
 
-  connection.promise().query(action, (err, rows) => {
+  dbconnection.query(action, (err, rows) => {
     if (err) throw err; 
     console.table(rows);
     manu();
@@ -169,7 +169,7 @@ addnewDepartment = () => {
     .then(answer => {
       const action = `INSERT INTO department (name)
                       VALUES (?)`;
-      connection.query(action, answer.addDepartment, (err, result) => {
+      dbconnection.query(action, answer.addDepartment, (err, result) => {
         if (err) throw err;
         console.log("New Department Created."); 
 
@@ -213,7 +213,7 @@ addnewRole = () => {
 
       const action = `SELECT name, id FROM department`; 
 
-      connection.promise().query(action, (err, data) => {
+      dbconnection.query(action, (err, data) => {
         if (err) throw err; 
     
         const dept = data.map(({ name, id }) => ({ name: name, value: id }));
@@ -233,7 +233,7 @@ addnewRole = () => {
             const action = `INSERT INTO roles (title, salary, department_id)
                             VALUES (?, ?, ?)`;
 
-            connection.query(action, params, (err, result) => {
+            dbconnection.query(action, params, (err, result) => {
               if (err) throw err;
               console.log("New Role has been added."); 
 
@@ -279,7 +279,7 @@ addnewEmployee = () => {
 
     const action = `SELECT roles.id, roles.title FROM roles`;
   
-    connection.promise().query(action, (err, data) => {
+    dbconnection.query(action, (err, data) => {
       if (err) throw err; 
       
       const roles = data.map(({ id, title }) => ({ name: title, value: id }));
@@ -298,7 +298,7 @@ addnewEmployee = () => {
 
               const manageraction = `SELECT * FROM employee`;
 
-              connection.promise().query(manageraction, (err, data) => {
+              dbconnection.query(manageraction, (err, data) => {
                 if (err) throw err;
 
                 const managers = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
@@ -318,7 +318,7 @@ addnewEmployee = () => {
                     const action = `INSERT INTO employee (first_name, last_name, role_id, manager_id)
                                     VALUES (?, ?, ?, ?)`;
 
-                    connection.query(action, params, (err, result) => {
+                    dbconnection.query(action, params, (err, result) => {
                     if (err) throw err;
                     console.log("Employee info has been set.")
 
@@ -336,7 +336,7 @@ updateEmployee = () => {
   
   const action = `SELECT * FROM employee`;
 
-  connection.promise().query(action, (err, data) => {
+  dbconnection.query(action, (err, data) => {
     if (err) throw err; 
 
   const employeeslist = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
@@ -356,7 +356,7 @@ updateEmployee = () => {
 
         const action = `SELECT * FROM roles`;
 
-        connection.promise().query(action, (err, data) => {
+        dbconnection.query(action, (err, data) => {
           if (err) throw err; 
 
           const roles = data.map(({ id, title }) => ({ name: title, value: id }));
@@ -379,7 +379,7 @@ updateEmployee = () => {
 
                 const action = `UPDATE employee SET role_id = ? WHERE id = ?`;
 
-                connection.query(action, params, (err, result) => {
+                dbconnection.query(action, params, (err, result) => {
                   if (err) throw err;
                 console.log("Employee's Profile has been updated.");
               
@@ -396,7 +396,7 @@ updateManager = () => {
 
   const action = `SELECT * FROM employee`;
 
-  connection.promise().query(action, (err, data) => {
+  dbconnection.query(action, (err, data) => {
     if (err) throw err; 
 
   const employees = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
@@ -416,10 +416,10 @@ updateManager = () => {
 
         const manageraction = `SELECT * FROM employee`;
 
-          connection.promise().query(manageraction, (err, data) => {
+          dbconnection.query(manageraction, (err, data) => {
             if (err) throw err; 
 
-          const managers = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
+        const managers = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
             
               inquirer.prompt([
                 {
@@ -439,7 +439,7 @@ updateManager = () => {
 
                     const action = `UPDATE employee SET manager_id = ? WHERE id = ?`;
 
-                    connection.query(action, params, (err, result) => {
+                    dbconnection.query(action, params, (err, result) => {
                       if (err) throw err;
                     console.log("Employee's Profile has been updated.");
                   
@@ -455,7 +455,7 @@ updateManager = () => {
 deleteDepartment = () => {
   const action = `SELECT * FROM department`; 
 
-  connection.promise().query(action, (err, data) => {
+  dbconnection.query(action, (err, data) => {
     if (err) throw err; 
 
     const deptlist = data.map(({ name, id }) => ({ name: name, value: id }));
@@ -472,7 +472,7 @@ deleteDepartment = () => {
         const dept = deptselected.dept;
         const action = `DELETE FROM department WHERE id = ?`;
 
-        connection.query(action, dept, (err, result) => {
+        dbconnection.query(action, dept, (err, result) => {
           if (err) throw err;
           console.log("Department deleted successfully."); 
 
@@ -487,7 +487,7 @@ deleteaRole = () => {
 
   const action = `SELECT * FROM roles`; 
 
-  connection.promise().query(action, (err, data) => {
+  dbconnection.query(action, (err, data) => {
     if (err) throw err; 
 
     const role = data.map(({ title, id }) => ({ name: title, value: id }));
@@ -504,7 +504,7 @@ deleteaRole = () => {
         const Title = roleselected.role;
         const action = `DELETE FROM roles WHERE id = ?`;
 
-        connection.query(action, Title, (err, result) => {
+        dbconnection.query(action, Title, (err, result) => {
           if (err) throw err;
           console.log("Job Role deleted successfully."); 
 
@@ -519,7 +519,7 @@ deleteanEmployee = () => {
 
   const action = `SELECT * FROM employee`;
 
-  connection.promise().query(action, (err, data) => {
+  dbconnection.query(action, (err, data) => {
     if (err) throw err; 
 
   const employeeslist = data.map(({ id, first_name, last_name }) => ({ name: first_name + " "+ last_name, value: id }));
@@ -537,7 +537,7 @@ deleteanEmployee = () => {
 
         const action = `DELETE FROM employee WHERE id = ?`;
 
-        connection.query(action, employee, (err, result) => {
+        dbconnection.query(action, employee, (err, result) => {
           if (err) throw err;
           console.log("Employee deleted successfully.");
         
