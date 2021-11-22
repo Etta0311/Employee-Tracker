@@ -31,7 +31,8 @@ node server.js
 ```
 ## Usage
 View the full DEMO video on YOUTUBE.
-[Demo]()
+[Demo](https://youtu.be/_T1Yjqht9PM)
+![Democap](./demo/demo.png)
 
 ## Contributors
 
